@@ -4,35 +4,25 @@ import asyncHandler from "express-async-handler";
 import createError from "http-errors";
 
 const protect = asyncHandler(async (req, res, next) => {
-  
-    let token;
+  const authHeader = req.headers.authorization;
 
-    if (
-      req.headers.authorization &&
-      req.headers.authorization.startsWith("Bearer")
-    ) {
-      token = req.headers.authorization.split(" ")[1];
-    }
+  if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    throw createError(401, "Not authorized. No token found");
+  }
 
-    if (!token) {
-      throw createError(401, "Not authorized. No token found");
-    }
+  const token = authHeader.split(" ")[1];
 
-    const decoded = jwt.verify(
-      token,
-      process.env.JWT_SECRET
-    );
+  const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    const user = await User.findById(decoded.id).select("-password");
+  const user = await User.findById(decoded.id).select("-password");
 
-    if (!user) {
-      throw createError(401, "User not found");
-    }
+  if (!user) {
+    throw createError(401, "User not found");
+  }
 
-    req.user = user;
+  req.user = user;
 
-    next();
-  
+  next();
 });
 
 export default protect;

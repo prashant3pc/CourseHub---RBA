@@ -1,11 +1,7 @@
 import { body } from "express-validator";
 
 export const registerValidation = [
-
-  body("name")
-    .trim()
-    .notEmpty()
-    .withMessage("Name is required"),
+  body("name").trim().notEmpty().withMessage("Name is required"),
 
   body("email")
     .trim()
@@ -17,12 +13,12 @@ export const registerValidation = [
 
   body("password")
     .notEmpty()
-    .withMessage("Password is required"),
-    // .bail()
-    // .isLength({ min: 8 })
-    // .withMessage("Password must be at least 8 characters"),
+    .withMessage("Password is required")
+    .bail()
+    .isLength({ min: 8 })
+    .withMessage("Password must be at least 8 characters"),
 
- body("phone")
+  body("phone")
     .trim()
     .notEmpty()
     .withMessage("Phone number is required")
@@ -30,15 +26,10 @@ export const registerValidation = [
     .isLength({ min: 7, max: 15 })
     .withMessage("Phone number must be between 7 and 15 characters"),
 
- body("course")
-    .trim()
-    .notEmpty()
-    .withMessage("Course is required"),
-
+  body("course").trim().notEmpty().withMessage("Course is required"),
 ];
 
 export const loginValidation = [
-
   body("email")
     .trim()
     .notEmpty()
@@ -47,8 +38,5 @@ export const loginValidation = [
     .isEmail()
     .withMessage("Please enter a valid email"),
 
-  body("password")
-    .notEmpty()
-    .withMessage("Password is required"),
-
+  body("password").notEmpty().withMessage("Password is required"),
 ];

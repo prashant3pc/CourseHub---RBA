@@ -25,62 +25,54 @@ const Login = () => {
     setError("");
 
     try {
-      const res = await api.post(
-        "/auth/login",
-        formData
-      );
+      // Step 1: Login and get token
+      const res = await api.post("/auth/login", formData);
 
-      localStorage.setItem(
-        "token",
-        res.data.token
-      );
+      const token = res.data.data;
 
-      localStorage.setItem(
-        "user",
-        JSON.stringify(res.data.user)
-      );
+      // Step 2: Save token
+      localStorage.setItem("token", token);
 
-      const user = res.data.user;
+      // Step 3: Get logged-in user's information
+      const userRes = await api.get("/auth/me", {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
 
+      const user = userRes.data.data;
+
+      // Step 4: Save user
+      localStorage.setItem("user", JSON.stringify(user));
+
+      // Step 5: Redirect based on role
       if (user.role === "admin") {
         navigate("/admin-dashboard");
         return;
       }
 
-      if (
-        user.role === "teacher" &&
-        user.teacherApproved
-      ) {
+      if (user.role === "teacher" && user.teacherApproved) {
         navigate("/teacher-dashboard");
         return;
       }
 
       navigate("/student-dashboard");
     } catch (error) {
-      setError(
-        error.response?.data?.message ||
-        "Login failed"
-      );
+      setError(error.response?.data?.message || "Login failed");
     }
   };
 
   return (
     <div className="min-h-screen flex justify-center items-center bg-gray-100">
-
       <form
         onSubmit={handleSubmit}
         className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md"
       >
-
         <h2 className="text-3xl font-bold text-center text-purple-600 mb-6">
           Login
         </h2>
 
-        {error && (
-          <p className="text-red-600 mb-4">
-            {error}
-          </p>
-        )}
+        {error && <p className="text-red-600 mb-4">{error}</p>}
 
         <input
           type="email"
@@ -111,16 +103,11 @@ const Login = () => {
 
         <p className="text-center mt-5">
           Don't have an account?{" "}
-          <Link
-            to="/register"
-            className="text-purple-600 font-semibold"
-          >
+          <Link to="/register" className="text-purple-600 font-semibold">
             Register
           </Link>
         </p>
-
       </form>
-
     </div>
   );
 };

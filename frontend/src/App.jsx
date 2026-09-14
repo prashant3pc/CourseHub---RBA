@@ -1,25 +1,19 @@
-import {
-  BrowserRouter,
-  Routes,
-  Route,
-  Navigate,
-} from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 
-import Login from "./pages/Login";
-import Register from "./pages/Register";
+import Login from "./Pages/Login";
+import Register from "./Pages/Register";
 
-import StudentDashboard from "./pages/StudentDashboard";
-import BecomeTeacher from "./pages/BecomeTeacher";
-import Courses from "./pages/Courses";
+import StudentDashboard from "./Pages/StudentDashboard";
+import BecomeTeacher from "./Pages/BecomeTeacher";
+import Courses from "./Pages/Courses";
 
-import TeacherDashboard from "./pages/TeacherDashboard";
+import TeacherDashboard from "./Pages/TeacherDashboard";
 
-import AdminDashboard from "./pages/AdminDashboard";
-import AdminApplications from "./pages/AdminApplications";
-import AdminStudents from "./pages/AdminStudents";
-import AdminTeachers from "./pages/AdminTeachers";
-import AdminCourses from "./pages/AdminCourses";
-
+import AdminDashboard from "./Pages/AdminDashboard";
+import AdminApplications from "./Pages/AdminApplications";
+import AdminStudents from "./Pages/AdminStudents";
+import AdminTeachers from "./Pages/AdminTeachers";
+import AdminCourses from "./Pages/AdminCourses";
 
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -27,57 +21,34 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
+        <Route path="/" element={<Navigate to="/login" replace />} />
 
-       <Route
-          path="/"
-          element={
-            <Navigate
-              to="/login"
-              replace
-            />
-          }
-        />
+        <Route path="/login" element={<Login />} />
 
-        <Route
-          path="/login"
-          element={<Login />}
-        />
-
-        <Route
-          path="/register"
-          element={<Register />}
-        />
+        <Route path="/register" element={<Register />} />
 
         <Route
           path="/student-dashboard"
           element={
-            <ProtectedRoute
-              allowedRoles={["student"]}
-            >
+            <ProtectedRoute allowedRoles={["student"]}>
               <StudentDashboard />
             </ProtectedRoute>
           }
         />
 
-
         <Route
           path="/courses"
           element={
-            <ProtectedRoute
-              allowedRoles={["student"]}
-            >
+            <ProtectedRoute allowedRoles={["student"]}>
               <Courses />
             </ProtectedRoute>
           }
         />
 
-
         <Route
           path="/become-teacher"
           element={
-            <ProtectedRoute
-              allowedRoles={["student"]}
-            >
+            <ProtectedRoute allowedRoles={["student"]}>
               <BecomeTeacher />
             </ProtectedRoute>
           }
@@ -86,9 +57,7 @@ function App() {
         <Route
           path="/teacher-dashboard"
           element={
-            <ProtectedRoute
-              allowedRoles={["teacher"]}
-            >
+            <ProtectedRoute allowedRoles={["teacher"]}>
               <TeacherDashboard />
             </ProtectedRoute>
           }
@@ -97,9 +66,7 @@ function App() {
         <Route
           path="/admin-dashboard"
           element={
-            <ProtectedRoute
-              allowedRoles={["admin"]}
-            >
+            <ProtectedRoute allowedRoles={["admin"]}>
               <AdminDashboard />
             </ProtectedRoute>
           }
@@ -108,9 +75,7 @@ function App() {
         <Route
           path="/admin/applications"
           element={
-            <ProtectedRoute
-              allowedRoles={["admin"]}
-            >
+            <ProtectedRoute allowedRoles={["admin"]}>
               <AdminApplications />
             </ProtectedRoute>
           }
@@ -119,9 +84,7 @@ function App() {
         <Route
           path="/admin/students"
           element={
-            <ProtectedRoute
-              allowedRoles={["admin"]}
-            >
+            <ProtectedRoute allowedRoles={["admin"]}>
               <AdminStudents />
             </ProtectedRoute>
           }
@@ -130,9 +93,7 @@ function App() {
         <Route
           path="/admin/teachers"
           element={
-            <ProtectedRoute
-              allowedRoles={["admin"]}
-            >
+            <ProtectedRoute allowedRoles={["admin"]}>
               <AdminTeachers />
             </ProtectedRoute>
           }
@@ -141,24 +102,13 @@ function App() {
         <Route
           path="/admin/courses"
           element={
-            <ProtectedRoute
-              allowedRoles={["admin"]}
-            >
+            <ProtectedRoute allowedRoles={["admin"]}>
               <AdminCourses />
             </ProtectedRoute>
           }
         />
 
-        <Route
-          path="*"
-          element={
-            <Navigate
-              to="/login"
-              replace
-            />
-          }
-        />
-
+        <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>
     </BrowserRouter>
   );
