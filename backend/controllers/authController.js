@@ -1,8 +1,9 @@
 import User from "../models/User.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import asyncHandler from "express-async-handler";
+import createError from "http-errors";
 
-// Generate JWT
 const generateToken = (id) => {
   return jwt.sign(
     { id },
@@ -13,11 +14,8 @@ const generateToken = (id) => {
   );
 };
 
-// ===============================
-// Register
-// ===============================
-export const registerUser = async (req, res) => {
-  try {
+export const registerUser = asyncHandler (async (req, res) => {
+  
     const {
       name,
       email,
@@ -31,10 +29,7 @@ export const registerUser = async (req, res) => {
     });
 
     if (existingUser) {
-      return res.status(400).json({
-        success: false,
-        message: "Email already registered",
-      });
+      throw createError(400, "Email already registered");
     }
 
     const hashedPassword = await bcrypt.hash(
@@ -68,19 +63,10 @@ export const registerUser = async (req, res) => {
         teacherApproved: user.teacherApproved,
       },
     });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
-};
+});
 
-// ===============================
-// Login
-// ===============================
-export const loginUser = async (req, res) => {
-  try {
+export const loginUser = asyncHandler (async (req, res) => {
+  
     const { email, password } =
       req.body;
 
@@ -89,10 +75,7 @@ export const loginUser = async (req, res) => {
     });
 
     if (!user) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid Email or Password",
-      });
+      throw createError(401, "Invalid Email or Password");
     }
 
     const match =
@@ -102,10 +85,7 @@ export const loginUser = async (req, res) => {
       );
 
     if (!match) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid Email or Password",
-      });
+      throw createError(401, "Invalid Email or PAssword");
     }
 
     const token = generateToken(user._id);
@@ -125,42 +105,24 @@ export const loginUser = async (req, res) => {
           user.teacherApproved,
       },
     });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
-};
+});
 
-// ===============================
-// Get Logged In User
-// ===============================
-export const getMe = async (
+export const getMe = asyncHandler (async (
   req,
   res
 ) => {
-  try {
+
     const user =
       await User.findById(
         req.user.id
       ).select("-password");
 
     if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: "User not found",
-      });
+        throw createError(404, "User not found");
     }
 
     res.status(200).json({
       success: true,
       user,
     });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
-};
+});

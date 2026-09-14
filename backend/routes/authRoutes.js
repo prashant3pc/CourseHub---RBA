@@ -1,4 +1,6 @@
 import express from "express";
+import { registerValidation,loginValidation } from "../validators/authValidator.js";
+import validationMiddleware from "../middleware/validationMiddleware.js"
 
 import {
   registerUser,
@@ -10,13 +12,11 @@ import protect from "../middleware/protect.js";
 
 const router = express.Router();
 
-// Register
-router.post("/register", registerUser);
+router.post("/register",registerValidation,
+  validationMiddleware, registerUser);
 
-// Login
-router.post("/login", loginUser);
+router.post("/login",loginValidation, validationMiddleware, loginUser);
 
-// Logged in user
 router.get("/me", protect, getMe);
 
 export default router;

@@ -4,35 +4,54 @@ import {
   getAllApplications,
   approveApplication,
   rejectApplication,
+  getAllStudents,
+  getAllTeachers,
 } from "../controllers/adminController.js";
 
 import protect from "../middleware/protect.js";
-import adminOnly from "../middleware/adminOnly.js";
+
+import {
+  authorize,
+} from "../middleware/roleMiddleware.js";
 
 const router = express.Router();
 
-// All teacher applications
 router.get(
   "/applications",
   protect,
-  adminOnly,
+  authorize("admin"),
   getAllApplications
 );
 
-// Approve application
+
 router.put(
   "/applications/:id/approve",
   protect,
-  adminOnly,
+  authorize("admin"),
   approveApplication
 );
 
-// Reject application
+
 router.put(
   "/applications/:id/reject",
   protect,
-  adminOnly,
+  authorize("admin"),
   rejectApplication
 );
+
+router.get(
+  "/students",
+  protect,
+  authorize("admin"),
+  getAllStudents
+);
+
+router.get(
+  "/teachers",
+  protect,
+  authorize("admin"),
+  getAllTeachers
+);
+
 
 export default router;

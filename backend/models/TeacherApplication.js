@@ -6,7 +6,6 @@ const teacherApplicationSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
-      unique: true,
     },
 
     fullName: {
@@ -24,7 +23,7 @@ const teacherApplicationSchema = new mongoose.Schema(
 
     phone: {
       type: String,
-      default: "",
+      required: true,
       trim: true,
     },
 
@@ -57,7 +56,7 @@ const teacherApplicationSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
-
+    
     status: {
       type: String,
       enum: ["pending", "approved", "rejected"],
@@ -67,6 +66,7 @@ const teacherApplicationSchema = new mongoose.Schema(
     adminRemark: {
       type: String,
       default: "",
+      trim: true,
     },
   },
   {
@@ -74,7 +74,9 @@ const teacherApplicationSchema = new mongoose.Schema(
   }
 );
 
-export default mongoose.model(
+const TeacherApplication = mongoose.model(
   "TeacherApplication",
   teacherApplicationSchema
 );
+
+export default TeacherApplication;

@@ -1,14 +1,25 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 
 import StudentDashboard from "./pages/StudentDashboard";
-import TeacherDashboard from "./pages/TeacherDashboard";
-import AdminDashboard from "./pages/AdminDashboard";
-
 import BecomeTeacher from "./pages/BecomeTeacher";
+import Courses from "./pages/Courses";
+
+import TeacherDashboard from "./pages/TeacherDashboard";
+
+import AdminDashboard from "./pages/AdminDashboard";
 import AdminApplications from "./pages/AdminApplications";
+import AdminStudents from "./pages/AdminStudents";
+import AdminTeachers from "./pages/AdminTeachers";
+import AdminCourses from "./pages/AdminCourses";
+
 
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -17,11 +28,14 @@ function App() {
     <BrowserRouter>
       <Routes>
 
-        {/* Public Routes */}
-
-        <Route
+       <Route
           path="/"
-          element={<Navigate to="/login" replace />}
+          element={
+            <Navigate
+              to="/login"
+              replace
+            />
+          }
         />
 
         <Route
@@ -34,43 +48,58 @@ function App() {
           element={<Register />}
         />
 
-        {/* Student */}
-
         <Route
           path="/student-dashboard"
           element={
-            <ProtectedRoute allowedRoles={["student"]}>
+            <ProtectedRoute
+              allowedRoles={["student"]}
+            >
               <StudentDashboard />
             </ProtectedRoute>
           }
         />
 
+
+        <Route
+          path="/courses"
+          element={
+            <ProtectedRoute
+              allowedRoles={["student"]}
+            >
+              <Courses />
+            </ProtectedRoute>
+          }
+        />
+
+
         <Route
           path="/become-teacher"
           element={
-            <ProtectedRoute allowedRoles={["student"]}>
+            <ProtectedRoute
+              allowedRoles={["student"]}
+            >
               <BecomeTeacher />
             </ProtectedRoute>
           }
         />
 
-        {/* Teacher */}
-
         <Route
           path="/teacher-dashboard"
           element={
-            <ProtectedRoute allowedRoles={["teacher"]}>
+            <ProtectedRoute
+              allowedRoles={["teacher"]}
+            >
               <TeacherDashboard />
             </ProtectedRoute>
           }
         />
 
-        {/* Admin */}
-
         <Route
           path="/admin-dashboard"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute
+              allowedRoles={["admin"]}
+            >
               <AdminDashboard />
             </ProtectedRoute>
           }
@@ -79,17 +108,55 @@ function App() {
         <Route
           path="/admin/applications"
           element={
-            <ProtectedRoute allowedRoles={["admin"]}>
+            <ProtectedRoute
+              allowedRoles={["admin"]}
+            >
               <AdminApplications />
             </ProtectedRoute>
           }
         />
 
-        {/* 404 */}
+        <Route
+          path="/admin/students"
+          element={
+            <ProtectedRoute
+              allowedRoles={["admin"]}
+            >
+              <AdminStudents />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/admin/teachers"
+          element={
+            <ProtectedRoute
+              allowedRoles={["admin"]}
+            >
+              <AdminTeachers />
+            </ProtectedRoute>
+          }
+        />
+
+        <Route
+          path="/admin/courses"
+          element={
+            <ProtectedRoute
+              allowedRoles={["admin"]}
+            >
+              <AdminCourses />
+            </ProtectedRoute>
+          }
+        />
 
         <Route
           path="*"
-          element={<Navigate to="/login" replace />}
+          element={
+            <Navigate
+              to="/login"
+              replace
+            />
+          }
         />
 
       </Routes>

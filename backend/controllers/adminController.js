@@ -1,129 +1,139 @@
 import TeacherApplication from "../models/TeacherApplication.js";
 import User from "../models/User.js";
+import asyncHandler from "express-async-handler";
+import createError from "http-errors";
 
-// =====================================
-// Get All Teacher Applications
-// =====================================
-export const getAllApplications = async (req, res) => {
-  try {
-    const applications = await TeacherApplication.find()
-      .populate(
-        "user",
-        "name email role teacherApproved profileImage"
-      )
-      .sort({ createdAt: -1 });
+export const getAllApplications = asyncHandler(async (req, res) => {
+  const applications = await TeacherApplication.find()
+    .populate(
+      "user",
+      "name email role teacherApproved profileImage"
+    )
+    .sort({ createdAt: -1 });
 
-    res.status(200).json({
-      success: true,
-      count: applications.length,
-      applications,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
+  res.status(200).json({
+    success: true,
+    count: applications.length,
+    applications,
+  });
+});
+
+export const approveApplication = asyncHandler(async (req, res) => {
+  const application = await TeacherApplication.findById(
+    req.params.id
+  );
+
+  if (!application) {
+    throw createError(404, "Application not found");
   }
-};
 
-// =====================================
-// Approve Teacher Application
-// =====================================
-export const approveApplication = async (req, res) => {
-  try {
-    const application = await TeacherApplication.findById(
-      req.params.id
+
+  if (application.status === "approved") {
+    throw createError(
+      400,
+      "Application already approved"
     );
-
-    if (!application) {
-      return res.status(404).json({
-        success: false,
-        message: "Application not found",
-      });
-    }
-
-    if (application.status === "approved") {
-      return res.status(400).json({
-        success: false,
-        message: "Application already approved",
-      });
-    }
-
-    const user = await User.findById(application.user);
-
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: "User not found",
-      });
-    }
-
-    user.role = "teacher";
-    user.teacherApproved = true;
-
-    await user.save();
-
-    application.status = "approved";
-
-    if (req.body.adminRemark) {
-      application.adminRemark = req.body.adminRemark;
-    }
-
-    await application.save();
-
-    res.status(200).json({
-      success: true,
-      message: "Teacher approved successfully",
-      application,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
   }
-};
 
-// =====================================
-// Reject Teacher Application
-// =====================================
-export const rejectApplication = async (req, res) => {
-  try {
-    const application = await TeacherApplication.findById(
-      req.params.id
+
+  if (application.status === "rejected") {
+    throw createError(
+      400,
+      "Rejected application cannot be approved"
     );
-
-    if (!application) {
-      return res.status(404).json({
-        success: false,
-        message: "Application not found",
-      });
-    }
-
-    if (application.status === "rejected") {
-      return res.status(400).json({
-        success: false,
-        message: "Application already rejected",
-      });
-    }
-
-    application.status = "rejected";
-
-    if (req.body.adminRemark) {
-      application.adminRemark = req.body.adminRemark;
-    }
-
-    await application.save();
-
-    res.status(200).json({
-      success: true,
-      message: "Application rejected",
-      application,
-    });
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      message: error.message,
-    });
   }
-};
+
+
+  const user = await User.findById(application.user);
+
+  if (!user) {
+    throw createError(404, "User not found");
+  }
+
+  
+  user.role = "teacher";
+  user.teacherApproved = true;
+
+  await user.save();
+
+  application.status = "approved";
+
+  if (req.body.adminRemark) {
+    application.adminRemark = req.body.adminRemark;
+  }
+
+  await application.save();
+
+  res.status(200).json({
+    success: true,
+    message: "Teacher approved successfully",
+    application,
+  });
+});
+
+export const rejectApplication = asyncHandler(async (req, res) => {
+  const application = await TeacherApplication.findById(
+    req.params.id
+  );
+
+  if (!application) {
+    throw createError(404, "Application not found");
+  }
+
+  if (application.status === "approved") {
+    throw createError(
+      400,
+      "Approved application cannot be rejected"
+    );
+  }
+
+  if (application.status === "rejected") {
+    throw createError(
+      400,
+      "Application already rejected"
+    );
+  }
+
+  application.status = "rejected";
+
+  if (req.body.adminRemark) {
+    application.adminRemark = req.body.adminRemark;
+  }
+
+  await application.save();
+
+  res.status(200).json({
+    success: true,
+    message: "Application rejected",
+    application,
+  });
+});
+
+export const getAllStudents = asyncHandler(async (req, res) => {
+  const students = await User.find({
+    role: "student",
+  })
+    .select("-password")
+    .sort({ createdAt: -1 });
+
+  res.status(200).json({
+    success: true,
+    count: students.length,
+    students,
+  });
+});
+
+export const getAllTeachers = asyncHandler(async (req, res) => {
+  const teachers = await User.find({
+    role: "teacher",
+    teacherApproved: true,
+  })
+    .select("-password")
+    .sort({ createdAt: -1 });
+
+  res.status(200).json({
+    success: true,
+    count: teachers.length,
+    teachers,
+  });
+});
