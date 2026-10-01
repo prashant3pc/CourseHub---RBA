@@ -15,7 +15,7 @@ import AdminStudents from "./Pages/AdminStudents";
 import AdminTeachers from "./Pages/AdminTeachers";
 import AdminCourses from "./Pages/AdminCourses";
 
-import ProtectedRoute from "./components/ProtectedRoute";
+import ProtectedRoute from "./Components/ProtectedRoute";
 
 function App() {
   return (
