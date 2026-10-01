@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import api from "../api/api";
-import Loader from "../components/Loader";
+import Loader from "../Components/Loader";
 
 const Courses = () => {
   const [courses, setCourses] = useState([]);
@@ -14,10 +14,7 @@ const Courses = () => {
 
         setCourses(res.data.courses || []);
       } catch (error) {
-        setError(
-          error.response?.data?.message ||
-            "Failed to load courses"
-        );
+        setError(error.response?.data?.message || "Failed to load courses");
       } finally {
         setLoading(false);
       }
@@ -32,10 +29,7 @@ const Courses = () => {
 
   return (
     <div className="min-h-screen bg-gray-100 p-8">
-
-      <h1 className="text-3xl font-bold text-purple-600 mb-6">
-        Courses
-      </h1>
+      <h1 className="text-3xl font-bold text-purple-600 mb-6">Courses</h1>
 
       {error && (
         <div className="bg-red-100 text-red-700 p-4 rounded-lg mb-6">
@@ -45,26 +39,15 @@ const Courses = () => {
 
       {!error && courses.length === 0 ? (
         <div className="bg-white p-6 rounded shadow">
-          <p className="text-gray-500">
-            No courses available yet.
-          </p>
+          <p className="text-gray-500">No courses available yet.</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-
           {courses.map((course) => (
-            <div
-              key={course._id}
-              className="bg-white p-5 rounded-lg shadow"
-            >
+            <div key={course._id} className="bg-white p-5 rounded-lg shadow">
+              <h2 className="text-xl font-bold">{course.title}</h2>
 
-              <h2 className="text-xl font-bold">
-                {course.title}
-              </h2>
-
-              <p className="text-gray-600 mt-2">
-                {course.description}
-              </p>
+              <p className="text-gray-600 mt-2">{course.description}</p>
 
               <p className="text-sm text-gray-500 mt-3">
                 Category: {course.category}
@@ -74,20 +57,15 @@ const Courses = () => {
                 Duration: {course.duration}
               </p>
 
-              <p className="text-sm text-gray-500">
-                Level: {course.level}
-              </p>
+              <p className="text-sm text-gray-500">Level: {course.level}</p>
 
               <p className="text-sm text-gray-500 mt-2">
                 Teacher: {course.teacher?.name || "N/A"}
               </p>
-
             </div>
           ))}
-
         </div>
       )}
-
     </div>
   );
 };
