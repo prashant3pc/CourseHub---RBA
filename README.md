@@ -17,6 +17,7 @@ https://course-hub-rba.vercel.app/
 * Role-based authorization
 * Student dashboard
 * Teacher dashboard
+* Admin dashboard
 * Course management
 * Protected routes
 * REST API
